@@ -1,0 +1,24 @@
+/-- trabalho da disciplina de Lógica e Especificação, ministrada pelo professor Bruno Lopes, que consiste em verificar se em um tabuleiro de damas, em uma dada posição, existe uma estratégia vencedora. --/
+/--PERGUNTA: tem que ver pros 2 caras? D: --/
+
+
+/--isso pode ser útil: http://disi.unitn.it/~agiordani/fm/L5/main.pdf --/
+
+
+
+
+
+/-- MODULE legalPlays: o cara responsável por fazer as jogadas. tem que receber um tabuleiro, player1,player2... --/
+/-- como as jogadas válidas são iguais para ambos os jogadores, a gente só precisa saber quem é que vai jogar no momento: isso contradiz a necessidade de um player1 e player2 simultaneamente.  --/
+
+/-- os defines malucos vão entrar aqui --/
+MODULE legalPlays(tab,player)
+
+
+
+
+
+
+
+
+
