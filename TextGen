@@ -1,0 +1,11 @@
+for i in range(1,9):
+    print("case lin = {0}:".format(i))
+    for j in range(1,8):
+        print("\tcase col = {0}:".format(j))
+        lin1 = i+1;
+        col1 = j-1
+        if lin1 <=8 and col1 <=8 :
+            print("\t\tcase board[{0}][{1}] = 0:".format(lin1,col1))
+        col1 = j+1
+        if lin1<=8 and col1 <=8 :
+            print("\t\tcase board[{0}][{1}] = 0:".format(lin1,col1))

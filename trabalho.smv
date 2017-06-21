@@ -12,9 +12,10 @@
 /-- como as jogadas válidas são iguais para ambos os jogadores, a gente só precisa saber quem é que vai jogar no momento: isso contradiz a necessidade de um player1 e player2 simultaneamente.  --/
 
 /-- os defines malucos vão entrar aqui --/
-MODULE legalPlays(tab,player)
-
-
+MODULE legalPlays(board,player)
+ASSIGN
+	next(board[1][1]) := player = 1 & board[1][1] = 1 ? case
+		board[2][2] = 0 : 0;
 
 
 
