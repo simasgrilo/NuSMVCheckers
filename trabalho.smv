@@ -5,14 +5,41 @@
 /--isso pode ser útil: http://disi.unitn.it/~agiordani/fm/L5/main.pdf --/
 
 
-
-
+/-- Podemos representar 0: casa livre, 1: casa ocupada por peça, 2: casa ocupada por dama--/
+/-- considerando o tabuleiro de entrada matriz 8x8, tem que verificar uma jogada válida para cada uma das peças. --/
 
 /-- MODULE legalPlays: o cara responsável por fazer as jogadas. tem que receber um tabuleiro, player1,player2... --/
 /-- como as jogadas válidas são iguais para ambos os jogadores, a gente só precisa saber quem é que vai jogar no momento: isso contradiz a necessidade de um player1 e player2 simultaneamente.  --/
 
-/-- os defines malucos vão entrar aqui --/
+/-- os defines malucos vão entrar aqui: esse é o módulo que verifica para todas as posições as jogadas válidas --/
+/-- uma ideia que eu tive para a codificação é: player 1: peão:1,dama:2 ;  player 2: peão: 3 ; dama : 4. --/
+/-- é bom definir a condição de vitória (np1 = 0 ou np2 = 0) --/
+
 MODULE legalPlays(tab,player)
+DEFINE
+	/-- jogadas válidas para o player 1 --/
+	case player = 1:
+		case 
+			/-- peça comum --/
+			tab[0][0] = 1 & tab[1][1] = 0:
+				tab[0][0] = 0;
+				tab[1][1] = 1;
+			/-- dama --/
+			tab[0][0] = 2:
+				tab[0][0] = 0;
+				/-- como escrever as possíveis jogadas da dama nessa joça? --/
+		esac;
+
+
+
+
+MODULE capturePlays(tab,player)
+DEFINE
+	/-- jogadas com comida para o player 1 --/	
+	case player = 1 :
+		case 
+			tab[0][0] = 1 
+
 
 
 
