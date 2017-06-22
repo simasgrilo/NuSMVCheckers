@@ -1,11 +1,8 @@
-for i in range(1,9):
-    print("case lin = {0}:".format(i))
-    for j in range(1,8):
-        print("\tcase col = {0}:".format(j))
-        lin1 = i+1;
-        col1 = j-1
-        if lin1 <=8 and col1 <=8 :
-            print("\t\tcase board[{0}][{1}] = 0:".format(lin1,col1))
-        col1 = j+1
-        if lin1<=8 and col1 <=8 :
-            print("\t\tcase board[{0}][{1}] = 0:".format(lin1,col1))
+for position in range(0,31):
+    print("case position = {0}:".format(position))
+    print("\tcase whois = 1:")
+    if (position == 3 or position == 11 or position == 19 or position == 27 or position == 4 or position == 12  or position == 20):
+        print("\t\tmove(board,{0},{1});".format(position,position+4))
+    elif (postion/4)%2 = 0:
+    	print("\t\tmove(board,{0},{1});".format(position,position+4))
+    
