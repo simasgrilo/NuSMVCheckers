@@ -1,0 +1,104 @@
+MODULE move(board, p1, p2)
+  ASSIGN
+      next(board[p2]) := board[p1];
+      next(board[p1]) := 0;
+
+MODULE jump(board, p1, p2, p3)
+  VAR
+      num_pieces1 : 0..11;
+      num_pieces2 : 0..11;
+      end_game : 0..2;
+  ASSIGN
+
+      init(num_pieces1) := 11;
+      init(num_pieces2) := 11;
+
+      next(num_pieces1) := case
+                            (board[p3] = 1 | board[p3] = 2) : num_pieces1-1;
+                            TRUE: num_pieces1;
+                            esac;
+      next(num_pieces2) := case
+                            (board[p3] = 3 | board[p3] = 4) : num_pieces2-1;
+                            TRUE: num_pieces2;
+                            esac;
+
+
+      next(board[p2]) := board[p1];
+      next(board[p3]) := 0;
+      next(board[p1]) := 0;
+
+
+MODULE play(whois, board, position)
+  VAR
+    state: {wait, check, move, end};
+  DEFINE
+    line := position/4;
+    diag1 := case
+              position = 3 | position = 11 | position = 19 | position = 27 |
+              position = 4 | position = 12 | position = 20 : {position + 4};
+              (line mod 2) = 0 : {position + 4, position + 5};
+              (line mod 2) = 1 & line < 7 : {position + 3, position + 4};
+              TRUE: {32};
+              esac;
+    diag2 := case
+              position = 11 | position = 19 | position = 27 |
+              position = 4 | position = 12 | position = 20 | position = 28: {position - 4};
+              (line mod 2) = 0 & line > 0: {position - 3, position - 4};
+              (line mod 2) = 1 : {position - 4, position - 5};
+              TRUE: {32};
+              esac;
+  ASSIGN
+    init(state) := wait;
+    next(state) := case
+                    TRUE: state;
+                    esac;
+    next(board[position]) :=  board[position];
+
+    next(position):= case
+                      state = end : {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31};
+                      TRUE: position;
+                      esac;
+
+MODULE main
+  VAR
+    turn: {player1, player2};
+    position : 0..32;
+    board: array 0..31 of {0, 1, 2, 3, 4};
+    play1: process play(1, board, position);
+    moveT: process move(board, 0, diag1);
+  ASSIGN
+    init(position) := 0;
+    init(board[0]) := 1;
+    init(board[1]) := 0;
+    init(board[2]) := 0;
+    init(board[3]) := 0;
+    init(board[4]) := 0;
+    init(board[5]) := 0;
+    init(board[6]) := 0;
+    init(board[7]) := 0;
+    init(board[8]) := 0;
+    init(board[9]) := 0;
+    init(board[10]) := 0;
+    init(board[11]) := 0;
+    init(board[12]) := 0;
+    init(board[13]) := 0;
+    init(board[14]) := 0;
+    init(board[15]) := 0;
+    init(board[16]) := 0;
+    init(board[17]) := 0;
+    init(board[18]) := 0;
+    init(board[19]) := 0;
+    init(board[20]) := 0;
+    init(board[21]) := 0;
+    init(board[22]) := 0;
+    init(board[23]) := 0;
+    init(board[24]) := 0;
+    init(board[25]) := 0;
+    init(board[26]) := 0;
+    init(board[27]) := 0;
+    init(board[28]) := 0;
+    init(board[29]) := 0;
+    init(board[30]) := 0;
+    init(board[31]) := 0;
+SPEC
+    EF !(board[4] = 1 & board[0] = 0)
