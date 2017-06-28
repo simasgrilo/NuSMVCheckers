@@ -66,7 +66,7 @@ MODULE main
     position : 0..32;
     board: array 0..31 of {0, 1, 2, 3, 4};
     play1: process play(1, board, position);
-    moveT: process move(board, 0, diag1);
+    moveT: process move(board, 0,4);
   ASSIGN
     init(position) := 0;
     init(board[0]) := 1;
