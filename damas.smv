@@ -1,0 +1,41 @@
+MODULE move(board,whoIs,lin,col)
+DEFINE
+	diagEsq := col - 1;
+	diagDir := col + 1;
+	linUp := lin + 1;
+	linDw := lin - 1;
+	canMove := case
+				whoIs = 1 & lin < 7 & (board[lin][col] = 1 | board[lin][col] = 2):
+					case
+					 col = 0 & board[linUp][diagDir] = 0: TRUE;
+					 col = 7 & board[linUp][diagEsq] = 0: TRUE;
+					 col > 0 & col < 7 & (board[linUp][diagEsq] = 0 | board[linUp][diagDir] = 0) : TRUE;
+					 TRUE: FALSE;
+					esac;
+				whoIs = 2 & lin > 0 & (board[lin][col] = 3 | board[lin][col] = 4):
+					case
+					 col = 0 & board[linDw][diagDir] = 0: TRUE;
+					 col = 7 & board[linDw][diagEsq] = 0: TRUE;
+					 col > 0 & col < 7 & (board[linDw][diagEsq] = 0 | board[linDw][diagDir] = 0) : TRUE;
+					 TRUE: FALSE;
+					esac;
+				TRUE: FALSE;
+				esac;
+ASSIGN
+	next(board[0][0]):= case
+						lin = 0 & col = 0 & canMove: 0;
+						canMove & whoIs = 1: 1;
+						canMove & whoIs = 2: 2;
+						TRUE: board[0][0];
+					   esac;
+
+MODULE main
+VAR
+	board : array -1..8 of array -1..8 of {0,1,2,3,4};
+	whoIs : {1,2};
+	
+	moveTest: process move(board,whoIs,0,2);
+ASSIGN
+	init(whoIs) := 1;
+	init(board[0][0]):=1;
+	
