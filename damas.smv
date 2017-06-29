@@ -28,14 +28,39 @@ ASSIGN
 						canMove & whoIs = 2: 2;
 						TRUE: board[0][0];
 					   esac;
-
+	next(lin):= case
+				 col = 6 | col = 7: case
+									 lin < 7: linUp;
+									 lin = 7: 0;
+									 TRUE: lin;
+									esac;
+				 TRUE: lin;
+				 esac;
+	next(col):= case
+				 lin mod 2 = 0: case
+								 col < 6: col + 2;
+								 col = 6: 1;
+								 TRUE: col;
+								esac;
+				 lin mod 2 = 1: case
+								 col < 7: col + 2;
+								 col = 7: 0;
+								 TRUE: col;
+								esac;
+				TRUE: col;
+				esac;
+				
 MODULE main
 VAR
 	board : array -1..8 of array -1..8 of {0,1,2,3,4};
 	whoIs : {1,2};
-	
-	moveTest: process move(board,whoIs,0,2);
+	lin : {0,1,2,3,4,5,6,7};
+	col : {0,1,2,3,4,5,6,7};
+	moveTest: process move(board,whoIs,lin,col);
 ASSIGN
+	init(lin) := 0;
+	init(col) := 0;
 	init(whoIs) := 1;
 	init(board[0][0]):=1;
+	init(board[0][2]):=1;
 	
