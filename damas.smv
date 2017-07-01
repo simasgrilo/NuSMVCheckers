@@ -832,4 +832,4 @@ ASSIGN
 	init(board[7][6]) := 5;
 	init(board[7][7]) := 0;
 SPEC
-	AG !(pecas1 = 0)
+	AG (pecas1 != 0 )
