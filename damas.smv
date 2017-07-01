@@ -8,6 +8,8 @@ DEFINE
 	diagDir := col + 1;
 	linUp := lin + 1;
 	linDw := lin - 1;
+	lin2Up := lin + 2;
+	lin2Dw := lin - 2;
 	canMove := case
 				 whoIs = 1 & lin < 7 & (board[lin][col] = 1 | board[lin][col] = 2):case
 					 col = 0 & board[linUp][diagDir] = 0 & movNum = 1: TRUE;
@@ -32,37 +34,93 @@ DEFINE
 				 TRUE: FALSE;
 				esac;
 	canJump := case
-				 whoIs = 1 & lin < 7 & (board[lin][col] = 1 | board[lin][col] = 2):case
-					 col = 0 & board[linUp][diagDir] = 0 & movNum = 1: TRUE;
-					 col = 7 & board[linUp][diagEsq] = 0 & movNum = 2: TRUE;
-					 col > 0 & col < 7:case
-						 board[linUp][diagDir] = 0 & movNum = 1 : TRUE;
-						 board[linUp][diagEsq] = 0 & movNum = 2 : TRUE;
-						 TRUE: FALSE;
-						esac;
+				 whoIs = 1 & (board[lin][col] = 1 | board[lin][col] = 2):case
+				   lin = 7:case
+				     col = 7 & (board[linDw][diagEsq] = 3 | board[linDw][diagEsq] = 4) & board[lin2Dw][diagEsq] = 0: TRUE;
+					 col < 7:case
+					   (board[linDw][diagDir]= 3 | board[linDw][diagDir]= 4) & board[lin2Dw][diagDir]= 0: TRUE;
+					   (board[linDw][diagEsq]= 3 | board[linDw][diagEsq]= 4) & board[lin2Dw][diagEsq]= 0: TRUE;
+					   TRUE: FALSE;
+					 esac;
 					 TRUE: FALSE;
 					esac;
-				 whoIs = 2 & lin > 0 & (board[lin][col] = 3 | board[lin][col] = 4):case
-					 col = 0 & board[linDw][diagDir] = 0 & movNum = 1: TRUE;
-					 col = 7 & board[linDw][diagEsq] = 0 & movNum = 2: TRUE;
-					 col > 0 & col < 7:case
-					     board[linDw][diagDir] = 0 & movNum = 1 : TRUE;
-						 board[linDw][diagEsq] = 0 & movNum = 2 : TRUE;
-						 TRUE: FALSE;
-						esac;
+				   lin = 0:case
+				     col = 0 & (board[linUp][diagDir] = 3 | board[linUp][diagDir] = 4) & board[lin2Up][diagDir] = 0: TRUE;
+					 col < 7:case
+					   (board[linUp][diagDir]= 3 | board[linUp][diagDir]= 4) & board[lin2Up][diagDir]= 0: TRUE;
+					   (board[linUp][diagEsq]= 3 | board[linUp][diagEsq]= 4) & board[lin2Up][diagEsq]= 0: TRUE;
+					   TRUE: FALSE;
+					 esac;
 					 TRUE: FALSE;
 					esac;
-				 TRUE: FALSE;
-				esac;
+				   lin > 0 & lin < 7:case
+				     col = 7 & (board[linDw][diagEsq] = 3 | board[linDw][diagEsq] = 4) & board[lin2Dw][diagEsq] = 0: TRUE;
+				     col = 7 & (board[linUp][diagEsq] = 3 | board[linUp][diagEsq] = 4) & board[lin2Up][diagEsq] = 0: TRUE;
+				     col = 0 & (board[linDw][diagDir] = 3 | board[linDw][diagDir] = 4) & board[lin2Dw][diagDir] = 0: TRUE;
+				     col = 0 & (board[linUp][diagDir] = 3 | board[linUp][diagDir] = 4) & board[lin2Up][diagDir] = 0: TRUE;
+					 col > 0 & col < 7:case
+					   (board[linDw][diagDir]= 3 | board[linDw][diagDir]= 4) & board[lin2Dw][diagDir]= 0: TRUE;
+					   (board[linDw][diagEsq]= 3 | board[linDw][diagEsq]= 4) & board[lin2Dw][diagEsq]= 0: TRUE;
+					   (board[linUp][diagDir]= 3 | board[linUp][diagDir]= 4) & board[lin2Up][diagDir]= 0: TRUE;
+					   (board[linUp][diagEsq]= 3 | board[linUp][diagEsq]= 4) & board[lin2Up][diagEsq]= 0: TRUE;
+					   TRUE: FALSE;
+				     esac;
+					 TRUE: FALSE;
+					esac;
+					TRUE: FALSE;
+				   esac;
+				 whoIs = 2 & (board[lin][col] = 3 | board[lin][col] = 4):case
+				   lin = 7:case
+				     col = 7 & (board[linDw][diagEsq] = 1 | board[linDw][diagEsq] = 2) & board[lin2Dw][diagEsq] = 0: TRUE;
+					 col < 7:case
+					   (board[linDw][diagDir]= 1 | board[linDw][diagDir]= 1) & board[lin2Dw][diagDir]= 0: TRUE;
+					   (board[linDw][diagEsq]= 1 | board[linDw][diagEsq]= 1) & board[lin2Dw][diagEsq]= 0: TRUE;
+					   TRUE: FALSE;
+					 esac;
+					 TRUE: FALSE;
+					esac;
+				   lin = 0:case
+				     col = 0 & (board[linUp][diagDir] = 1 | board[linUp][diagDir] = 2) & board[lin2Up][diagDir] = 0: TRUE;
+					 col < 7:case
+					   (board[linUp][diagDir]= 1 | board[linUp][diagDir]= 2) & board[lin2Up][diagDir]= 0: TRUE;
+					   (board[linUp][diagEsq]= 1 | board[linUp][diagEsq]= 2) & board[lin2Up][diagEsq]= 0: TRUE;
+					   TRUE: FALSE;
+					 esac;
+					TRUE: FALSE;
+					esac;
+				   lin > 0 & lin < 7:case
+				     col = 7 & (board[linDw][diagEsq] = 1 | board[linDw][diagEsq] = 2) & board[lin2Dw][diagEsq] = 0: TRUE;
+				     col = 7 & (board[linUp][diagEsq] = 1 | board[linUp][diagEsq] = 2) & board[lin2Up][diagEsq] = 0: TRUE;
+				     col = 0 & (board[linDw][diagDir] = 1 | board[linDw][diagDir] = 2) & board[lin2Dw][diagDir] = 0: TRUE;
+				     col = 0 & (board[linUp][diagDir] = 1 | board[linUp][diagDir] = 2) & board[lin2Up][diagDir] = 0: TRUE;
+					 col > 0 & col < 7:case
+					   (board[linDw][diagDir]= 1 | board[linDw][diagDir]= 2) & board[lin2Dw][diagDir]= 0: TRUE;
+					   (board[linDw][diagEsq]= 1 | board[linDw][diagEsq]= 2) & board[lin2Dw][diagEsq]= 0: TRUE;
+					   (board[linUp][diagDir]= 1 | board[linUp][diagDir]= 2) & board[lin2Up][diagDir]= 0: TRUE;
+					   (board[linUp][diagEsq]= 1 | board[linUp][diagEsq]= 2) & board[lin2Up][diagEsq]= 0: TRUE;
+					   TRUE: FALSE;
+				     esac;
+					 TRUE: FALSE;
+					esac;
+					TRUE: FALSE;
+				   esac;
+                   TRUE: FALSE;
+				  esac;
 ASSIGN
 	next(board[0][0]) := case
-							lin = 0 & col = 0 & canMove: 0;
-							canMove & whoIs = 1 & 0 = linUp:case
+							lin = 0 & col = 0 & (canMove | canJump): 0;
+							canJump & 0 = linUp & (0 = diagDir | 0 = diagEsq): 0;
+							canJump & 0 = lin2Up & (0 = diagDir | 0 = diagEsq):case
+								 whoIs = 1: 1;
+								 whoIs = 2: 3;
+								 TRUE: board[0][0];
+								esac; 
+							!canJump & canMove & whoIs = 1 & 0 = linUp:case
 								 0 = diagDir & movNum = 1: 1;
 								 0 = diagDir & movNum = 2: 1;
 								 TRUE: board[0][0];
 								esac;
-							canMove & whoIs = 2 & 0 = linDw:case
+							!canJump & canMove & whoIs = 2 & 0 = linDw:case
 								 0 = diagDir & movNum = 1: 3;
 								 0 = diagDir & movNum = 2: 3;
 								 TRUE: board[0][0];
@@ -506,42 +564,81 @@ ASSIGN
 	next(whoIs) := case
 					canMove & whoIs = 1: 2;
 					canMove & whoIs = 2: 1;
-					TRUE: whois;
+					TRUE: whoIs;
 				   esac;
---	next(lin):= case
---				 col = 6 | col = 7: case
---									 lin < 7: linUp;
---									 lin = 7: 0;
---									 TRUE: lin;
---									esac;
---				 TRUE: lin;
---				 esac;
---	next(col):= case
---				 lin mod 2 = 0: case
---								 col < 6: col + 2;
---								 col = 6: 1;
---								 TRUE: col;
---								esac;
---				 lin mod 2 = 1: case
---								 col < 7: col + 2;
---								 col = 7: 0;
---								 TRUE: col;
---								esac;
---				TRUE: col;
---				esac;
 				
+FAIRNESS
+  running;
 MODULE main
 VAR
-	board : array -1..8 of array -1..8 of {0,1,2,3,4};
+	board : array 0..7 of array 0..7 of {0,1,2,3,4,5};
 	whoIs : {1,2};
---	lin : {0,1,2,3,4,5,6,7};
---	col : {0,1,2,3,4,5,6,7};
 	moveTest: process move(board,whoIs);
 ASSIGN
---	init(lin) := 0;
---	init(col) := 0;
 	init(whoIs) := 1;
-	init(board[0][0]):=1;
-	init(board[0][2]):=1;
+	init(board[0][0]) := 0;
+	init(board[0][1]) := 5;
+	init(board[0][2]) := 0;
+	init(board[0][3]) := 5;
+	init(board[0][4]) := 0;
+	init(board[0][5]) := 5;
+	init(board[0][6]) := 0;
+	init(board[0][7]) := 5;
+	init(board[1][0]) := 5;
+	init(board[1][1]) := 0;
+	init(board[1][2]) := 5;
+	init(board[1][3]) := 0;
+	init(board[1][4]) := 5;
+	init(board[1][5]) := 0;
+	init(board[1][6]) := 5;
+	init(board[1][7]) := 0;
+	init(board[2][0]) := 0;
+	init(board[2][1]) := 5;
+	init(board[2][2]) := 0;
+	init(board[2][3]) := 5;
+	init(board[2][4]) := 0;
+	init(board[2][5]) := 5;
+	init(board[2][6]) := 0;
+	init(board[2][7]) := 5;
+	init(board[3][0]) := 5;
+	init(board[3][1]) := 0;
+	init(board[3][2]) := 5;
+	init(board[3][3]) := 0;
+	init(board[3][4]) := 5;
+	init(board[3][5]) := 0;
+	init(board[3][6]) := 5;
+	init(board[3][7]) := 0;
+	init(board[4][0]) := 0;
+	init(board[4][1]) := 5;
+	init(board[4][2]) := 0;
+	init(board[4][3]) := 5;
+	init(board[4][4]) := 0;
+	init(board[4][5]) := 5;
+	init(board[4][6]) := 0;
+	init(board[4][7]) := 5;
+	init(board[5][0]) := 5;
+	init(board[5][1]) := 0;
+	init(board[5][2]) := 5;
+	init(board[5][3]) := 0;
+	init(board[5][4]) := 5;
+	init(board[5][5]) := 0;
+	init(board[5][6]) := 5;
+	init(board[5][7]) := 0;
+	init(board[6][0]) := 0;
+	init(board[6][1]) := 5;
+	init(board[6][2]) := 0;
+	init(board[6][3]) := 5;
+	init(board[6][4]) := 0;
+	init(board[6][5]) := 5;
+	init(board[6][6]) := 0;
+	init(board[6][7]) := 5;
+	init(board[7][0]) := 5;
+	init(board[7][1]) := 0;
+	init(board[7][2]) := 5;
+	init(board[7][3]) := 0;
+	init(board[7][4]) := 5;
+	init(board[7][5]) := 0;
+	init(board[7][6]) := 5;
+	init(board[7][7]) := 0;
 SPEC
 	EF (board[0][0] = 0)
