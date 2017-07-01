@@ -229,7 +229,6 @@ ASSIGN
 								 TRUE: col;
 								esac;
 				 lin mod 2 = 1: case
-								 col < 7: col + 2;
 								 col = 7: 0;
 								 TRUE: col;
 								esac;
