@@ -69,22 +69,20 @@ ASSIGN
 					TRUE: whoIs;
 				   esac;
 				
-FAIRNESS
-  running;
 MODULE main
 VAR
-	board : array 0..1 of array 0..1 of {0,1,2,3,4,5};
-	whoIs : {1,2};
+	board : array 0..1 of array 0..1 of 0..5;
+	whoIs : 1..2;
 	pecas1:0..1;
 	pecas2:0..1;
 	moveTest: process move(board,whoIs,pecas1,pecas2);
 ASSIGN
 	init(whoIs) := 1;
-	init(pecas1) := 0;
+	init(pecas1) := 1;
 	init(pecas2) := 0;
-	init(board[0][0]) := 0;
+	init(board[0][0]) := 1;
 	init(board[0][1]) := 5;
 	init(board[1][0]) := 5;
 	init(board[1][1]) := 0;
 SPEC
-	AG (pecas1 != 0 )
+	AG (pecas1 = 0 )

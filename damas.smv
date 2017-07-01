@@ -758,8 +758,8 @@ FAIRNESS
   running;
 MODULE main
 VAR
-	board : array 0..7 of array 0..7 of {0,1,2,3,4,5};
-	whoIs : {1,2};
+	board : array 0..7 of array 0..7 of 0..5;
+	whoIs : 1..2;
 	pecas1:0..12;
 	pecas2:0..12;
 	moveTest: process move(board,whoIs,pecas1,pecas2);
