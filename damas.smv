@@ -755,7 +755,7 @@ ASSIGN
                    esac;
                 
 FAIRNESS
-  running;
+ (lin mod 2 = 0 & col mod 2 = 0)|(lin mod 2 = 1 & col mod 2 = 1)
 MODULE main
 VAR
     board : array 0..7 of array 0..7 of 0..5;
@@ -832,4 +832,4 @@ ASSIGN
     init(board[7][6]) := 5;
     init(board[7][7]) := 0;
 SPEC
-    AG (pecas1 != 0 )
+    EF (pecas1 != 0 )

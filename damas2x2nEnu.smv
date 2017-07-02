@@ -1,0 +1,86 @@
+MODULE move(board,whoIs)
+VAR
+    lin : 0..1;
+    col : 0..1;
+DEFINE
+    diagEsq := col - 1;
+    diagDir := col + 1;
+    linUp := lin + 1;
+    linDw := lin - 1;
+    canMove := case
+                 whoIs = 1 & lin < 1 & (board[lin][col] = 1 | board[lin][col] = 2):case
+                     col = 0 & board[linUp][diagDir] = 0 : TRUE;
+                     col = 1 & board[linUp][diagEsq] = 0 : TRUE;
+                     TRUE: FALSE;
+                    esac;
+                 whoIs = 2 & lin > 0 & (board[lin][col] = 3 | board[lin][col] = 4):case
+                     col = 0 & board[linDw][diagDir] = 0 : TRUE;
+                     col = 1 & board[linDw][diagEsq] = 0 : TRUE;
+                     TRUE: FALSE;
+                    esac;
+                 TRUE: FALSE;
+                esac;
+ASSIGN
+	init(lin) := 0;
+	init(col) := 0;
+    next(board[0][0]) := case
+                            lin = 0 & col = 0 & (canMove): 0;
+                            canMove & whoIs = 1 & 0 = linUp:case
+                                 0 = diagDir: 1;
+                                 0 = diagDir: 1;
+                                 TRUE: board[0][0];
+                                esac;
+                            canMove & whoIs = 2 & 0 = linDw:case
+                                 0 = diagDir: 3;
+                                 0 = diagDir: 3;
+                                 TRUE: board[0][0];
+                                esac;
+                            TRUE: board[0][0];
+                         esac;
+    next(board[1][1]) := case
+                            lin = 1 & col = 1 & canMove: 0;
+                            canMove & whoIs = 1 & 1 = linUp:case
+                                 1 = diagDir: 1;
+                                 1 = diagDir: 1;
+                                 TRUE: board[1][1];
+                                esac;
+                            canMove & whoIs = 2 & 1 = linDw:case
+                                 1 = diagDir: 3;
+                                 1 = diagDir: 3;
+                                 TRUE: board[1][1];
+                                esac;
+                            TRUE: board[1][1];
+                         esac;
+    next(board[0][1]):= board[0][1];
+    next(board[1][0]):= board[1][0];
+    next(whoIs) := case
+                    whoIs = 1: 2;
+                    whoIs = 2: 1;
+                    TRUE: whoIs;
+                   esac;
+	next(lin) := case
+	  col = 0: lin;
+	  col = 1: case
+       lin = 0: 1;
+	   lin = 1: 0;
+	  esac;
+	 esac;
+	next(col) := case
+	  col = 0: 1;
+	  col = 1: 0;
+	 esac;
+FAIRNESS
+ (lin mod 2 = 0 & col mod 2 = 0)|(lin mod 2 = 1 & col mod 2 = 1)
+MODULE main
+VAR
+    board : array 0..1 of array 0..1 of 0..5;
+    whoIs : 1..2;
+    moveTest: move(board,whoIs);
+ASSIGN
+    init(whoIs) := 1;
+    init(board[0][0]) := 0;
+    init(board[0][1]) := 5;
+    init(board[1][0]) := 5;
+    init(board[1][1]) := 3;
+SPEC
+    EF (board[1][1] = 0 & board[0][0] = 3);
