@@ -1,32 +1,45 @@
-MODULE move(board,whoIs,pecas1,pecas2)
+MODULE move(board,whoIs,pecas1,pecas2,depth)
 VAR
     lin : {0,1,2,3};
     col : {0,1,2,3};
     movN: {1,2};
 DEFINE
+	legalPos := (lin mod 2 = 0 & col mod 2 = 0)|(lin mod 2 = 0 & col mod 2 = 0);
     diagEsq := col - 1;
     diagDir := col + 1;
     linUp := lin + 1;
     linDw := lin - 1;
     canMove := case
-                 pecas1 > 0 & whoIs = 1 & lin < 3 & (board[lin][col] = 1 | board[lin][col] = 2):case
+                 depth > 0 & pecas1 > 0 & whoIs = 1 & lin < 3 & (board[lin][col] = 1 | board[lin][col] = 2):case
                      col = 0 & board[linUp][diagDir] = 0 & movN = 1 : TRUE;
                      col = 3 & board[linUp][diagEsq] = 0 & movN = 2 : TRUE;
-                     col > 0 & col < 3:case
+--                     col > 0 & col < 3:case
+                     col = 1:case
+                         board[linUp][diagDir] = 0 & movN = 1 : TRUE;
+                         board[linUp][diagEsq] = 0 & movN = 2 : TRUE;
+                         TRUE: FALSE;
+                        esac;
+                     col = 2:case
                          board[linUp][diagDir] = 0 & movN = 1 : TRUE;
                          board[linUp][diagEsq] = 0 & movN = 2 : TRUE;
                          TRUE: FALSE;
                         esac;
                      TRUE: FALSE;
                     esac;
-                 pecas2 > 0 & whoIs = 2 & lin > 0 & (board[lin][col] = 3 | board[lin][col] = 4):case
+                 depth > 0 & pecas2 > 0 & whoIs = 2 & lin > 0 & (board[lin][col] = 3 | board[lin][col] = 4):case
                      col = 0 & board[linDw][diagDir] = 0 & movN = 1 : TRUE;
                      col = 3 & board[linDw][diagEsq] = 0 & movN = 2 : TRUE;
-                     col > 0 & col < 3:case
-                         board[linDw][diagDir] = 0 & movN = 1 : TRUE;
-                         board[linDw][diagEsq] = 0 & movN = 2 : TRUE;
+--                     col > 0 & col < 3:case
+                     col = 1:case
+                         board[linUp][diagDir] = 0 & movN = 1 : TRUE;
+                         board[linUp][diagEsq] = 0 & movN = 2 : TRUE;
                          TRUE: FALSE;
-                       esac;
+                        esac;
+                     col = 2:case
+                         board[linUp][diagDir] = 0 & movN = 1 : TRUE;
+                         board[linUp][diagEsq] = 0 & movN = 2 : TRUE;
+                         TRUE: FALSE;
+                        esac;
                      TRUE: FALSE;
                     esac;
                  TRUE: FALSE;
@@ -159,19 +172,24 @@ ASSIGN
                    esac;
 	next(pecas1) := pecas1;
 	next(pecas2) := pecas2;
-FAIRNESS
- (lin mod 2 = 0 & col mod 2 = 0)|(lin mod 2 = 1 & col mod 2 = 1)
+	next(depth) := case
+                     depth > 0 :depth - 1;
+					 TRUE:depth;
+					esac;
+FAIRNESS legalPos
 MODULE main
 VAR
     board : array 0..3 of array 0..3 of 0..5;
     whoIs : 1..2;
     pecas1 : 0..2;
     pecas2 : 0..2;
-    moveTest: move(board,whoIs,pecas1,pecas2);
+	depth : 0..1;
+    moveTest: move(board,whoIs,pecas1,pecas2,depth);
 ASSIGN
     init(whoIs) := 1;
     init(pecas1) := 1;
     init(pecas2) := 0;
+	init(depth) := 1;
     init(board[0][0]) := 1;
     init(board[0][1]) := 5;
     init(board[0][2]) := 0;

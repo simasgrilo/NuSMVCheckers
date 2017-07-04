@@ -1,5 +1,5 @@
-for lin in range (0,4):
-    for col in range(0,4):
+for lin in range (0,5):
+    for col in range(0,5):
         if lin%2 == 0 and col%2 == 0:
             print("\tnext(board[{0}][{1}]) := case".format(lin,col))
             print("\t\t\t\t\t\t\tlin = {0} & col = {1} & (canMove): 0;".format(lin,col))
