@@ -2,8 +2,13 @@ MODULE move(board,whoIs,pecas1,pecas2)
 VAR
     movNum : {1,2};
     lin : {0,1,2,3,4,5,6,7};
-    col : {0,1,2,3,4,5,6,7};
+    colAux : {0,2,4,6};
 DEFINE
+	col := case
+		     lin mod 2 = 0:colAux;
+			 lin mod 2 = 1:colAux + 1;
+			 TRUE: 0;
+			esac;
     diagEsq := col - 1;
     diagDir := col + 1;
     linUp := lin + 1;
