@@ -1,10 +1,12 @@
-for lin in range (0,3):
-    for col in range(0,3):
-        if lin%2 == 0 and col%2 == 0:
+for lin in range (0,4):
+    for col in range(0,4):
+        if lin < 0 or col < 0:
+            print("\tnext(board[{0}][{1}]) := board[{0}][{1}];".format(lin,col))
+        elif lin%2 == 0 and col%2 == 0:
             print("\tnext(board[{0}][{1}]) := case".format(lin,col))
             print("\t\t\t\t\t\t\tlin = {0} & col = {1} & (canMove | canJump): 0;".format(lin,col))
             print("\t\t\t\t\t\t\tcanJump & {0} = linUp & ({1} = diagDir | {1} = diagEsq): 0;".format(lin,col))
-            print("\t\t\t\t\t\t\tcanJump & {0} = lin2Up & ({1} = diag2Dir | {1} = diag2Esq):case".format(lin,col))
+            print("\t\t\t\t\t\t\tcanJump & {0} = lin2Up & ({1} = diag2Dir & movN = 1 | {1} = diag2Esq & movN = 2):case".format(lin,col))
             print("\t\t\t\t\t\t\t\t whoIs = 1: 1;")
             print("\t\t\t\t\t\t\t\t whoIs = 2: 3;")
             print("\t\t\t\t\t\t\t\t TRUE: board[{0}][{1}];".format(lin,col))
@@ -25,7 +27,7 @@ for lin in range (0,3):
             print("\tnext(board[{0}][{1}]) := case".format(lin,col))
             print("\t\t\t\t\t\t\tlin = {0} & col = {1} & canMove: 0;".format(lin,col))
             print("\t\t\t\t\t\t\tcanJump & {0} = linUp & ({1} = diagDir | {1} = diagEsq): 0;".format(lin,col))
-            print("\t\t\t\t\t\t\tcanJump & {0} = lin2Up & ({1} = diag2Dir | {1} = diag2Esq):case".format(lin,col))
+            print("\t\t\t\t\t\t\tcanJump & {0} = lin2Up & ({1} = diag2Dir & movN = 1 | {1} = diag2Esq & movN = 2):case".format(lin,col))
             print("\t\t\t\t\t\t\t\t whoIs = 1: 1;")
             print("\t\t\t\t\t\t\t\t whoIs = 2: 3;")
             print("\t\t\t\t\t\t\t\t TRUE: board[{0}][{1}];".format(lin,col))

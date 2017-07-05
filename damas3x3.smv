@@ -38,7 +38,7 @@ DEFINE
                esac;
     canJump := case
                  whoIs = 1 & (board[lin][col] = 1 | board[lin][col] = 2):case
-                   lin = 2:case
+                   lin = 2: case
                      col = 2 & (board[linDw][diagEsq] = 3 | board[linDw][diagEsq] = 4) & board[lin2Dw][diag2Esq] = 0: TRUE;
                      col = 0 & (board[linDw][diagDir] = 3 | board[linDw][diagDir] = 4) & board[lin2Dw][diag2Dir] = 0: TRUE;
                      col > 0 & col < 2 & diag2Esq>0 & diag2Dir<2:case
