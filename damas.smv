@@ -1,252 +1,213 @@
-MODULE move(board,whoIs,lin,col)
+MODULE move(turn, board, line, column, iterations)
+VAR
+	destVar: -7..7;
 DEFINE
-	diagEsq := col - 1;
-	diagDir := col + 1;
-	linUp := lin + 1;
-	linDw := lin - 1;
-	canMove := case
-				whoIs = 1 & lin < 7 & (board[lin][col] = 1 | board[lin][col] = 2):
-					case
-					 col = 0 & board[linUp][diagDir] = 0: TRUE;
-					 col = 7 & board[linUp][diagEsq] = 0: TRUE;
-					 col > 0 & col < 7 & (board[linUp][diagEsq] = 0 | board[linUp][diagDir] = 0) : TRUE;
-					 TRUE: FALSE;
-					esac;
-				whoIs = 2 & lin > 0 & (board[lin][col] = 3 | board[lin][col] = 4):
-					case
-					 col = 0 & board[linDw][diagDir] = 0: TRUE;
-					 col = 7 & board[linDw][diagEsq] = 0: TRUE;
-					 col > 0 & col < 7 & (board[linDw][diagEsq] = 0 | board[linDw][diagDir] = 0) : TRUE;
-					 TRUE: FALSE;
-					esac;
-				TRUE: FALSE;
-				esac;
+	isMyPiece := board[line][column] = turn | board[line][column] = turn + 1;
+	isOnBoard := (line + destVar >= 1 & line + destVar <= 8) & (column + destVar >= 1 & column + destVar <= 8);
+	isAdj := isOnBoard & (destVar = -1 | destVar = 1);
+	isDestinyEmpty := board[line + destVar][column + destVar] = 0;
+	isEnd := iterations > 100;
+	canJump := isAdj & !isDestinyEmpty & !isEnd;
+	canMove := isMyPiece & isAdj & isDestinyEmpty & !canJump &!isEnd;
 ASSIGN
-	next(board[0][0]) := case
-							lin = 0 & col = 0 & canMove: 0;
-							canMove & whoIs = 1 & 0 = linUp & (0 = diagEsq | 0 = diagDir): 1;
-							canMove & whoIs = 2 & 0 = linDw & (0 = diagEsq | 0 = diagDir): 3;
-							TRUE: board[0][0];
-						 esac;
-	next(board[0][2]) := case
-							lin = 0 & col = 2 & canMove: 0;
-							canMove & whoIs = 1 & 0 = linUp & (2 = diagEsq | 2 = diagDir): 1;
-							canMove & whoIs = 2 & 0 = linDw & (2 = diagEsq | 2 = diagDir): 3;
-							TRUE: board[0][2];
-						 esac;
-	next(board[0][4]) := case
-							lin = 0 & col = 4 & canMove: 0;
-							canMove & whoIs = 1 & 0 = linUp & (4 = diagEsq | 4 = diagDir): 1;
-							canMove & whoIs = 2 & 0 = linDw & (4 = diagEsq | 4 = diagDir): 3;
-							TRUE: board[0][4];
-						 esac;
-	next(board[0][6]) := case
-							lin = 0 & col = 6 & canMove: 0;
-							canMove & whoIs = 1 & 0 = linUp & (6 = diagEsq | 6 = diagDir): 1;
-							canMove & whoIs = 2 & 0 = linDw & (6 = diagEsq | 6 = diagDir): 3;
-							TRUE: board[0][6];
-						 esac;
 	next(board[1][1]) := case
-							lin = 1 & col = 1 & canMove: 0;
-							canMove & whoIs = 1 & 1 = linUp & (1 = diagEsq | 1 = diagDir): 1;
-							canMove & whoIs = 2 & 1 = linDw & (1 = diagEsq | 1 = diagDir): 3;
-							TRUE: board[1][1];
-						 esac;
-	next(board[1][3]) := case
-							lin = 1 & col = 3 & canMove: 0;
-							canMove & whoIs = 1 & 1 = linUp & (3 = diagEsq | 3 = diagDir): 1;
-							canMove & whoIs = 2 & 1 = linDw & (3 = diagEsq | 3 = diagDir): 3;
-							TRUE: board[1][3];
-						 esac;
-	next(board[1][5]) := case
-							lin = 1 & col = 5 & canMove: 0;
-							canMove & whoIs = 1 & 1 = linUp & (5 = diagEsq | 5 = diagDir): 1;
-							canMove & whoIs = 2 & 1 = linDw & (5 = diagEsq | 5 = diagDir): 3;
-							TRUE: board[1][5];
-						 esac;
-	next(board[1][7]) := case
-							lin = 1 & col = 7 & canMove: 0;
-							canMove & whoIs = 1 & 1 = linUp & (7 = diagEsq | 7 = diagDir): 1;
-							canMove & whoIs = 2 & 1 = linDw & (7 = diagEsq | 7 = diagDir): 3;
-							TRUE: board[1][7];
-						 esac;
-	next(board[2][0]) := case
-							lin = 2 & col = 0 & canMove: 0;
-							canMove & whoIs = 1 & 2 = linUp & (0 = diagEsq | 0 = diagDir): 1;
-							canMove & whoIs = 2 & 2 = linDw & (0 = diagEsq | 0 = diagDir): 3;
-							TRUE: board[2][0];
-						 esac;
-	next(board[2][2]) := case
-							lin = 2 & col = 2 & canMove: 0;
-							canMove & whoIs = 1 & 2 = linUp & (2 = diagEsq | 2 = diagDir): 1;
-							canMove & whoIs = 2 & 2 = linDw & (2 = diagEsq | 2 = diagDir): 3;
-							TRUE: board[2][2];
-						 esac;
-	next(board[2][4]) := case
-							lin = 2 & col = 4 & canMove: 0;
-							canMove & whoIs = 1 & 2 = linUp & (4 = diagEsq | 4 = diagDir): 1;
-							canMove & whoIs = 2 & 2 = linDw & (4 = diagEsq | 4 = diagDir): 3;
-							TRUE: board[2][4];
-						 esac;
-	next(board[2][6]) := case
-							lin = 2 & col = 6 & canMove: 0;
-							canMove & whoIs = 1 & 2 = linUp & (6 = diagEsq | 6 = diagDir): 1;
-							canMove & whoIs = 2 & 2 = linDw & (6 = diagEsq | 6 = diagDir): 3;
-							TRUE: board[2][6];
-						 esac;
-	next(board[3][1]) := case
-							lin = 3 & col = 1 & canMove: 0;
-							canMove & whoIs = 1 & 3 = linUp & (1 = diagEsq | 1 = diagDir): 1;
-							canMove & whoIs = 2 & 3 = linDw & (1 = diagEsq | 1 = diagDir): 3;
-							TRUE: board[3][1];
-						 esac;
-	next(board[3][3]) := case
-							lin = 3 & col = 3 & canMove: 0;
-							canMove & whoIs = 1 & 3 = linUp & (3 = diagEsq | 3 = diagDir): 1;
-							canMove & whoIs = 2 & 3 = linDw & (3 = diagEsq | 3 = diagDir): 3;
-							TRUE: board[3][3];
-						 esac;
-	next(board[3][5]) := case
-							lin = 3 & col = 5 & canMove: 0;
-							canMove & whoIs = 1 & 3 = linUp & (5 = diagEsq | 5 = diagDir): 1;
-							canMove & whoIs = 2 & 3 = linDw & (5 = diagEsq | 5 = diagDir): 3;
-							TRUE: board[3][5];
-						 esac;
-	next(board[3][7]) := case
-							lin = 3 & col = 7 & canMove: 0;
-							canMove & whoIs = 1 & 3 = linUp & (7 = diagEsq | 7 = diagDir): 1;
-							canMove & whoIs = 2 & 3 = linDw & (7 = diagEsq | 7 = diagDir): 3;
-							TRUE: board[3][7];
-						 esac;
-	next(board[4][0]) := case
-							lin = 4 & col = 0 & canMove: 0;
-							canMove & whoIs = 1 & 4 = linUp & (0 = diagEsq | 0 = diagDir): 1;
-							canMove & whoIs = 2 & 4 = linDw & (0 = diagEsq | 0 = diagDir): 3;
-							TRUE: board[4][0];
-						 esac;
-	next(board[4][2]) := case
-							lin = 4 & col = 2 & canMove: 0;
-							canMove & whoIs = 1 & 4 = linUp & (2 = diagEsq | 2 = diagDir): 1;
-							canMove & whoIs = 2 & 4 = linDw & (2 = diagEsq | 2 = diagDir): 3;
-							TRUE: board[4][2];
-						 esac;
-	next(board[4][4]) := case
-							lin = 4 & col = 4 & canMove: 0;
-							canMove & whoIs = 1 & 4 = linUp & (4 = diagEsq | 4 = diagDir): 1;
-							canMove & whoIs = 2 & 4 = linDw & (4 = diagEsq | 4 = diagDir): 3;
-							TRUE: board[4][4];
-						 esac;
-	next(board[4][6]) := case
-							lin = 4 & col = 6 & canMove: 0;
-							canMove & whoIs = 1 & 4 = linUp & (6 = diagEsq | 6 = diagDir): 1;
-							canMove & whoIs = 2 & 4 = linDw & (6 = diagEsq | 6 = diagDir): 3;
-							TRUE: board[4][6];
-						 esac;
-	next(board[5][1]) := case
-							lin = 5 & col = 1 & canMove: 0;
-							canMove & whoIs = 1 & 5 = linUp & (1 = diagEsq | 1 = diagDir): 1;
-							canMove & whoIs = 2 & 5 = linDw & (1 = diagEsq | 1 = diagDir): 3;
-							TRUE: board[5][1];
-						 esac;
-	next(board[5][3]) := case
-							lin = 5 & col = 3 & canMove: 0;
-							canMove & whoIs = 1 & 5 = linUp & (3 = diagEsq | 3 = diagDir): 1;
-							canMove & whoIs = 2 & 5 = linDw & (3 = diagEsq | 3 = diagDir): 3;
-							TRUE: board[5][3];
-						 esac;
-	next(board[5][5]) := case
-							lin = 5 & col = 5 & canMove: 0;
-							canMove & whoIs = 1 & 5 = linUp & (5 = diagEsq | 5 = diagDir): 1;
-							canMove & whoIs = 2 & 5 = linDw & (5 = diagEsq | 5 = diagDir): 3;
-							TRUE: board[5][5];
-						 esac;
-	next(board[5][7]) := case
-							lin = 5 & col = 7 & canMove: 0;
-							canMove & whoIs = 1 & 5 = linUp & (7 = diagEsq | 7 = diagDir): 1;
-							canMove & whoIs = 2 & 5 = linDw & (7 = diagEsq | 7 = diagDir): 3;
-							TRUE: board[5][7];
-						 esac;
-	next(board[6][0]) := case
-							lin = 6 & col = 0 & canMove: 0;
-							canMove & whoIs = 1 & 6 = linUp & (0 = diagEsq | 0 = diagDir): 1;
-							canMove & whoIs = 2 & 6 = linDw & (0 = diagEsq | 0 = diagDir): 3;
-							TRUE: board[6][0];
-						 esac;
-	next(board[6][2]) := case
-							lin = 6 & col = 2 & canMove: 0;
-							canMove & whoIs = 1 & 6 = linUp & (2 = diagEsq | 2 = diagDir): 1;
-							canMove & whoIs = 2 & 6 = linDw & (2 = diagEsq | 2 = diagDir): 3;
-							TRUE: board[6][2];
-						 esac;
-	next(board[6][4]) := case
-							lin = 6 & col = 4 & canMove: 0;
-							canMove & whoIs = 1 & 6 = linUp & (4 = diagEsq | 4 = diagDir): 1;
-							canMove & whoIs = 2 & 6 = linDw & (4 = diagEsq | 4 = diagDir): 3;
-							TRUE: board[6][4];
-						 esac;
-	next(board[6][6]) := case
-							lin = 6 & col = 6 & canMove: 0;
-							canMove & whoIs = 1 & 6 = linUp & (6 = diagEsq | 6 = diagDir): 1;
-							canMove & whoIs = 2 & 6 = linDw & (6 = diagEsq | 6 = diagDir): 3;
-							TRUE: board[6][6];
-						 esac;
-	next(board[7][1]) := case
-							lin = 7 & col = 1 & canMove: 0;
-							canMove & whoIs = 1 & 7 = linUp & (1 = diagEsq | 1 = diagDir): 1;
-							canMove & whoIs = 2 & 7 = linDw & (1 = diagEsq | 1 = diagDir): 3;
-							TRUE: board[7][1];
-						 esac;
-	next(board[7][3]) := case
-							lin = 7 & col = 3 & canMove: 0;
-							canMove & whoIs = 1 & 7 = linUp & (3 = diagEsq | 3 = diagDir): 1;
-							canMove & whoIs = 2 & 7 = linDw & (3 = diagEsq | 3 = diagDir): 3;
-							TRUE: board[7][3];
-						 esac;
-	next(board[7][5]) := case
-							lin = 7 & col = 5 & canMove: 0;
-							canMove & whoIs = 1 & 7 = linUp & (5 = diagEsq | 5 = diagDir): 1;
-							canMove & whoIs = 2 & 7 = linDw & (5 = diagEsq | 5 = diagDir): 3;
-							TRUE: board[7][5];
-						 esac;
-	next(board[7][7]) := case
-							lin = 7 & col = 7 & canMove: 0;
-							canMove & whoIs = 1 & 7 = linUp & (7 = diagEsq | 7 = diagDir): 1;
-							canMove & whoIs = 2 & 7 = linDw & (7 = diagEsq | 7 = diagDir): 3;
-							TRUE: board[7][7];
-						 esac;
-	next(lin):= case
-				 col = 6 | col = 7: case
-									 lin < 7: linUp;
-									 lin = 7: 0;
-									 TRUE: lin;
-									esac;
-				 TRUE: lin;
-				 esac;
-	next(col):= case
-				 lin mod 2 = 0: case
-								 col < 6: col + 2;
-								 col = 6: 1;
-								 TRUE: col;
-								esac;
-				 lin mod 2 = 1: case
-								 col < 6: col + 2;
-								 col = 7: 0;
-								 TRUE: col;
-								esac;
-				TRUE: col;
-				esac;
-				
+													line + destVar = 1 & column + destVar = 1 & (canMove | canJump): board[line][column];
+													line = 1 & column = 1 & (canMove | canJump): 0;
+													TRUE: board[1][1];
+												esac;
+ FAIRNESS
+ 	isOnBoard
+
 MODULE main
 VAR
-	board : array -1..8 of array -1..8 of {0,1,2,3,4};
-	whoIs : {1,2};
-	lin : {0,1,2,3,4,5,6,7};
-	col : {0,1,2,3,4,5,6,7};
-	moveTest: process move(board,whoIs,lin,col);
+	turn: {0,1,2};
+	destLine : 1..8;
+	destColumn : 1..8;
+	iterations : 1..200;
+	board: array 1..8 of array 1..8 of {-1,0,1,2,3,4};
+	move1: process move(turn, board,  1, 1, iterations);
+	move2: process move(turn, board,  1, 3, iterations);
+	move3: process move(turn, board,  1, 5, iterations);
+	move4: process move(turn, board,  1, 7, iterations);
+	move5: process move(turn, board,  2, 2, iterations);
+	move6: process move(turn, board,  2, 4, iterations);
+	move7: process move(turn, board,  2, 6, iterations);
+	move8: process move(turn, board,  2, 8, iterations);
+	move9: process move(turn, board,  3, 1, iterations);
+	move10: process move(turn, board,  3, 3, iterations);
+	move11: process move(turn, board,  3, 5, iterations);
+	move12: process move(turn, board,  3, 7, iterations);
+	move13: process move(turn, board,  4, 2, iterations);
+	move14: process move(turn, board,  4, 4, iterations);
+	move15: process move(turn, board,  4, 6, iterations);
+	move16: process move(turn, board,  4, 8, iterations);
+	move17: process move(turn, board,  5, 1, iterations);
+	move18: process move(turn, board,  5, 3, iterations);
+	move19: process move(turn, board,  5, 5, iterations);
+	move20: process move(turn, board,  5, 7, iterations);
+	move21: process move(turn, board,  6, 2, iterations);
+	move22: process move(turn, board,  6, 4, iterations);
+	move23: process move(turn, board,  6, 6, iterations);
+	move24: process move(turn, board,  6, 8, iterations);
+	move25: process move(turn, board,  7, 1, iterations);
+	move26: process move(turn, board,  7, 3, iterations);
+	move27: process move(turn, board,  7, 5, iterations);
+	move28: process move(turn, board,  7, 7, iterations);
+	move29: process move(turn, board,  8, 2, iterations);
+	move30: process move(turn, board,  8, 4, iterations);
+	move31: process move(turn, board,  8, 6, iterations);
+	move32: process move(turn, board,  8, 8, iterations);
 ASSIGN
-	init(lin) := 0;
-	init(col) := 0;
-	init(whoIs) := 1;
-	init(board[0][0]):=1;
-	init(board[0][2]):=1;
-	
+	--Controle
+	init(iterations) := 1;
+	init(turn) := 1;
+	--Player 1
+	init(board[1][1]) := 1;
+	init(board[1][2]) := -1;
+	init(board[1][3]) := 1;
+	init(board[1][4]) := -1;
+	init(board[1][5]) := 1;
+	init(board[1][6]) := -1;
+	init(board[1][7]) := 1;
+	init(board[1][8]) := -1;
+
+	init(board[2][1]) := -1;
+	init(board[2][2]) := 1;
+	init(board[2][3]) := -1;
+	init(board[2][4]) := 1;
+	init(board[2][5]) := -1;
+	init(board[2][6]) := 1;
+	init(board[2][7]) := -1;
+	init(board[2][8]) := 1;
+
+	init(board[3][1]) := 1;
+	init(board[3][2]) := -1;
+	init(board[3][3]) := 1;
+	init(board[3][4]) := -1;
+	init(board[3][5]) := 1;
+	init(board[3][6]) := -1;
+	init(board[3][7]) := 1;
+	init(board[3][8]) := -1;
+
+	--Neutro
+	init(board[4][1]) := -1;
+	init(board[4][2]) := 0;
+	init(board[4][3]) := -1;
+	init(board[4][4]) := 0;
+	init(board[4][5]) := -1;
+	init(board[4][6]) := 0;
+	init(board[4][7]) := -1;
+	init(board[4][8]) := 0;
+
+	init(board[5][1]) := 0;
+	init(board[5][2]) := -1;
+	init(board[5][3]) := 0;
+	init(board[5][4]) := -1;
+	init(board[5][5]) := 0;
+	init(board[5][6]) := -1;
+	init(board[5][7]) := 0;
+	init(board[5][8]) := -1;
+
+	--Player 2
+	init(board[6][1]) := -1;
+	init(board[6][2]) := 2;
+	init(board[6][3]) := -1;
+	init(board[6][4]) := 2;
+	init(board[6][5]) := -1;
+	init(board[6][6]) := 2;
+	init(board[6][7]) := -1;
+	init(board[6][8]) := 2;
+
+	init(board[7][1]) := 2;
+	init(board[7][2]) := -1;
+	init(board[7][3]) := 2;
+	init(board[7][4]) := -1;
+	init(board[7][5]) := 2;
+	init(board[7][6]) := -1;
+	init(board[7][7]) := 2;
+	init(board[7][8]) := -1;
+
+	init(board[8][1]) := -1;
+	init(board[8][2]) := 2;
+	init(board[8][3]) := -1;
+	init(board[8][4]) := 2;
+	init(board[8][5]) := -1;
+	init(board[8][6]) := 2;
+	init(board[8][7]) := -1;
+	init(board[8][8]) := 2;
+
+	--Game Spaces
+	next(board[1][1]) := board[1][1];
+	next(board[1][3]) := board[1][3];
+	next(board[1][5]) := board[1][5];
+	next(board[1][7]) := board[1][7];
+	next(board[2][2]) := board[2][2];
+	next(board[2][4]) := board[2][4];
+	next(board[2][6]) := board[2][6];
+	next(board[2][8]) := board[2][8];
+	next(board[3][1]) := board[3][1];
+	next(board[3][3]) := board[3][3];
+	next(board[3][5]) := board[3][5];
+	next(board[3][7]) := board[3][7];
+	next(board[4][2]) := board[4][2];
+	next(board[4][4]) := board[4][4];
+	next(board[4][6]) := board[4][6];
+	next(board[4][8]) := board[4][8];
+	next(board[5][1]) := board[5][1];
+	next(board[5][3]) := board[5][3];
+	next(board[5][5]) := board[5][5];
+	next(board[5][7]) := board[5][7];
+	next(board[6][2]) := board[6][2];
+	next(board[6][4]) := board[6][4];
+	next(board[6][6]) := board[6][6];
+	next(board[6][8]) := board[6][8];
+	next(board[7][1]) := board[7][1];
+	next(board[7][3]) := board[7][3];
+	next(board[7][5]) := board[7][5];
+	next(board[7][7]) := board[7][7];
+	next(board[8][2]) := board[8][2];
+	next(board[8][4]) := board[8][4];
+	next(board[8][6]) := board[8][6];
+	next(board[8][8]) := board[8][8];
+
+	--Invalid Spaces
+	next(board[1][2]) := -1;
+	next(board[1][4]) := -1;
+	next(board[1][6]) := -1;
+	next(board[1][8]) := -1;
+	next(board[2][1]) := -1;
+	next(board[2][3]) := -1;
+	next(board[2][5]) := -1;
+	next(board[2][7]) := -1;
+	next(board[3][2]) := -1;
+	next(board[3][4]) := -1;
+	next(board[3][6]) := -1;
+	next(board[3][8]) := -1;
+	next(board[4][1]) := -1;
+	next(board[4][3]) := -1;
+	next(board[4][5]) := -1;
+	next(board[4][7]) := -1;
+	next(board[5][2]) := -1;
+	next(board[5][4]) := -1;
+	next(board[5][6]) := -1;
+	next(board[5][8]) := -1;
+	next(board[6][1]) := -1;
+	next(board[6][3]) := -1;
+	next(board[6][5]) := -1;
+	next(board[6][7]) := -1;
+	next(board[7][2]) := -1;
+	next(board[7][4]) := -1;
+	next(board[7][6]) := -1;
+	next(board[7][8]) := -1;
+	next(board[8][1]) := -1;
+	next(board[8][3]) := -1;
+	next(board[8][5]) := -1;
+	next(board[8][7]) := -1;
+
+	--Control
+	next(iterations) := case
+												iterations < 200 : iterations + 1;
+												TRUE: iterations;
+												esac;
+SPEC
+  !EF (board[1][1] = 0)
