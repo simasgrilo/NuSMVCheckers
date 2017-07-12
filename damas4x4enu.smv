@@ -258,7 +258,8 @@ ASSIGN
                     (canMove|canJump) & whoIs = 2: 1;
                     TRUE: whoIs;
                    esac;
-    next(pecas1) := case
+    next(lin) :=
+	next(pecas1) := case
                       pecas1 > 0 & whoIs = 2 & canJump:pecas1 - 1;
                       TRUE:pecas1;
                     esac;
