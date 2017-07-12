@@ -166,8 +166,8 @@ ASSIGN
                                             case
                                               --Check if destiny or source
                                               --Case source and is owner of the piece
-                                              line = 1 & column = 1 & (whois = 1 & (board[1][1] = 1  | board[1][1] = 2))
-                                                                    & (whois = 2 & (board[1][1] = 3  | board[1][1] = 4)):
+                                              line = 1 & column = 1 & ((whois = 1 & (board[1][1] = 1  | board[1][1] = 2))
+                                                                    | (whois = 2 & (board[1][1] = 3  | board[1][1] = 4))):
                                                                       case
                                                                         -- Check if normal : move 1 space
                                                                         board[1][1] = 1 | board[1][1] = 3:
