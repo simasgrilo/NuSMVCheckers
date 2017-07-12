@@ -1,5 +1,5 @@
-for lin in range (0,4):
-    for col in range(0,4):
+for lin in range (0,8):
+    for col in range(0,8):
         if lin < 0 or col < 0:
             print("\tnext(board[{0}][{1}]) := board[{0}][{1}];".format(lin,col))
         elif lin%2 == 0 and col%2 == 0:
