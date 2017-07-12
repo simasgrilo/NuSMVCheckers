@@ -1,707 +1,134 @@
 MODULE move(board,whoIs,pecas1,pecas2,col,lin)
 VAR
-    movN : {1,2};
+	movN: {1,2,3,4};
 DEFINE
     diagEsq := case
                 col - 1 > -1:col - 1;
-                col - 1 = -1 & lin mod 2=0 : 1; 
-                col - 1 = -1 & lin mod 2=1 : 0; 
+                col - 1 = -1 & lin mod 2=0 : 0; 
+                col - 1 = -1 & lin mod 2=1 : 1; 
                 TRUE:0;
                esac;
     diagDir := case
                 col + 1 < 8:col + 1;
-                col + 1 = 8 & lin mod 2=0 : 1; 
-                col + 1 = 8 & lin mod 2=1 : 0; 
+                col + 1 = 8 & lin mod 2=0 : 2; 
+                col + 1 = 8 & lin mod 2=1 : 3; 
                 TRUE:0;
                esac;
     linDw := case
                 lin - 1 > -1:lin - 1;
-                lin - 1 = -1 & col mod 2=0 : 1; 
-                lin - 1 = -1 & col mod 2=1 : 0; 
+                lin - 1 = -1 & col mod 2=0 : 0; 
+                lin - 1 = -1 & col mod 2=1 : 1; 
                 TRUE:0;
                esac;
     linUp := case
                 lin + 1 < 8 :lin + 1;
-                lin + 1 = 8 & col mod 2=0 : 1; 
-                lin + 1 = 8 & col mod 2=1 : 0; 
+                lin + 1 = 8 & col mod 2=0 : 2; 
+                lin + 1 = 8 & col mod 2=1 : 3; 
                 TRUE:0;
                esac;
     lin2Up := case
                 lin + 2 < 8 :lin + 2;
-                lin + 2 >= 8 & col mod 2=0 : 1; 
-                lin + 2 >= 8 & col mod 2=1 : 0; 
+                lin + 2 >= 8 & col mod 2=0 : 5; 
+                lin + 2 >= 8 & col mod 2=1 : 4; 
                 TRUE:0;
                esac;
     lin2Dw := case
                 lin - 2 > -1:lin - 2;
-                lin - 2 <= -1 & col mod 2=0 : 1; 
-                lin - 2 <= -1 & col mod 2=1 : 0; 
+                lin - 2 <= -1 & col mod 2=0 : 7; 
+                lin - 2 <= -1 & col mod 2=1 : 6; 
                 TRUE:0;
                esac;
     diag2Esq := case
                 col - 2 > -1:col - 2;
-                col - 2 <= -1 & lin mod 2=0 : 1; 
-                col - 2 <= -1 & lin mod 2=1 : 0; 
+                col - 2 <= -1 & lin mod 2=0 : 5; 
+                col - 2 <= -1 & lin mod 2=1 : 4; 
                 TRUE:0;
                esac;
     diag2Dir := case
                 col + 2 < 8:col + 2;
-                col + 2 >= 8 & lin mod 2=0 : 1; 
-                col + 2 >= 8 & lin mod 2=1 : 0; 
-                col + 2 >= 8 & lin mod 2=1 : 0; 
+                col + 2 >= 8 & lin mod 2=0 : 7; 
+                col + 2 >= 8 & lin mod 2=1 : 6; 
                 TRUE:0;
                esac;
     canMove :=case
-                 pecas1 > 0 & whoIs = 1 & lin < 3 & (board[lin][col] = 1 | board[lin][col] = 2):case
+                 pecas1 > 0 & whoIs = 1 & (board[lin][col] = 1 | board[lin][col] = 2):case
                          board[linUp][diagDir] = 0 & movN = 1 : TRUE;
                          board[linUp][diagEsq] = 0 & movN = 2 : TRUE;
                          TRUE: FALSE;
                       esac;
-                 pecas2 > 0 & whoIs = 2 & lin > 0 & (board[lin][col] = 3 | board[lin][col] = 4):case
-                         board[linDw][diagDir] = 0 & movN = 1 : TRUE;
-                         board[linDw][diagEsq] = 0 & movN = 2 : TRUE;
+                 pecas2 > 0 & whoIs = 2 & (board[lin][col] = 3 | board[lin][col] = 4):case
+                         board[linDw][diagDir] = 0 & movN = 3 : TRUE;
+                         board[linDw][diagEsq] = 0 & movN = 4 : TRUE;
                          TRUE: FALSE;
                         esac;
                  TRUE: FALSE;
                esac;
     canJump := case
                  pecas1 > 0 & whoIs = 1 & (board[lin][col] = 1 | board[lin][col] = 2):case
-                          movN = 1:case
-                             (board[linDw][diagDir]= 3 | board[linDw][diagDir]= 4) & board[lin2Dw][diag2Dir]= 0:TRUE;
-                             (board[linUp][diagDir]= 3 | board[linUp][diagDir]= 4) & board[lin2Up][diag2Dir]= 0:TRUE;
+                             movN = 1 & (board[linUp][diagDir]= 3 | board[linUp][diagDir]= 4) & board[lin2Up][diag2Dir]= 0:TRUE;
+                             movN = 2 & (board[linUp][diagEsq]= 3 | board[linUp][diagEsq]= 4) & board[lin2Up][diag2Esq]= 0:TRUE;
+                             movN = 3 & (board[linDw][diagDir]= 3 | board[linDw][diagDir]= 4) & board[lin2Dw][diag2Dir]= 0:TRUE;
+                             movN = 4 & (board[linDw][diagEsq]= 3 | board[linDw][diagEsq]= 4) & board[lin2Dw][diag2Esq]= 0:TRUE;
                              TRUE: FALSE;
                             esac;
-                          movN = 2:case
-                             (board[linDw][diagEsq]= 3 | board[linDw][diagEsq]= 4) & board[lin2Dw][diag2Esq]= 0:TRUE;
-                             (board[linUp][diagEsq]= 3 | board[linUp][diagEsq]= 4) & board[lin2Up][diag2Esq]= 0:TRUE;
-                             TRUE: FALSE;
-                            esac;
-                        TRUE:FALSE;
-                       esac;
                 pecas2 > 0 & whoIs = 2 & (board[lin][col] = 3 | board[lin][col] = 4):case
-                          movN = 1:case
-                             (board[linDw][diagDir]= 1 | board[linDw][diagDir]= 2) & board[lin2Dw][diag2Dir]= 0:TRUE;
-                             (board[linUp][diagDir]= 1 | board[linUp][diagDir]= 2) & board[lin2Up][diag2Dir]= 0:TRUE;
+                             movN = 1 & (board[linUp][diagDir]= 3 | board[linUp][diagDir]= 4) & board[lin2Up][diag2Dir]= 0:TRUE;
+                             movN = 2 & (board[linUp][diagEsq]= 3 | board[linUp][diagEsq]= 4) & board[lin2Up][diag2Esq]= 0:TRUE;
+                             movN = 3 & (board[linDw][diagDir]= 3 | board[linDw][diagDir]= 4) & board[lin2Dw][diag2Dir]= 0:TRUE;
+                             movN = 4 & (board[linDw][diagEsq]= 3 | board[linDw][diagEsq]= 4) & board[lin2Dw][diag2Esq]= 0:TRUE;
                              TRUE: FALSE;
                             esac;
-                          movN = 2:case
-                             (board[linDw][diagEsq]= 1 | board[linDw][diagEsq]= 2) & board[lin2Dw][diag2Esq]= 0:TRUE;
-                             (board[linUp][diagEsq]= 1 | board[linUp][diagEsq]= 2) & board[lin2Up][diag2Esq]= 0:TRUE;
-                             TRUE: FALSE;
-                            esac;
-                          TRUE: FALSE;
-                         esac;
                 TRUE: FALSE;
                esac;
 ASSIGN
-	next(board[0][0]) := case
-							lin = 0 & col = 0 & (canMove | canJump): 0;
-							canJump & 0 = linUp & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)): 0;
-							canJump & 0 = lin2Up & ((0 = diag2Dir & movN = 1)|(0 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[0][0];
-								esac;
-							canJump & 0 = linDw & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)): 0;
-							canJump & 0 = lin2Dw & ((0 = diag2Dir & movN = 1)|(0 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[0][0];
-								esac;
-							!canJump & canMove & whoIs = 1 & 0 = linUp & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 0 = linDw & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)):3;
-							TRUE: board[0][0];
-						 esac;
-	next(board[0][1]) := board[0][1];
-	next(board[0][2]) := case
-							lin = 0 & col = 2 & (canMove | canJump): 0;
-							canJump & 0 = linUp & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)): 0;
-							canJump & 0 = lin2Up & ((2 = diag2Dir & movN = 1)|(2 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[0][2];
-								esac;
-							canJump & 0 = linDw & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)): 0;
-							canJump & 0 = lin2Dw & ((2 = diag2Dir & movN = 1)|(2 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[0][2];
-								esac;
-							!canJump & canMove & whoIs = 1 & 0 = linUp & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 0 = linDw & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)):3;
-							TRUE: board[0][2];
-						 esac;
-	next(board[0][3]) := board[0][3];
-	next(board[0][4]) := case
-							lin = 0 & col = 4 & (canMove | canJump): 0;
-							canJump & 0 = linUp & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)): 0;
-							canJump & 0 = lin2Up & ((4 = diag2Dir & movN = 1)|(4 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[0][4];
-								esac;
-							canJump & 0 = linDw & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)): 0;
-							canJump & 0 = lin2Dw & ((4 = diag2Dir & movN = 1)|(4 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[0][4];
-								esac;
-							!canJump & canMove & whoIs = 1 & 0 = linUp & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 0 = linDw & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)):3;
-							TRUE: board[0][4];
-						 esac;
-	next(board[0][5]) := board[0][5];
-	next(board[0][6]) := case
-							lin = 0 & col = 6 & (canMove | canJump): 0;
-							canJump & 0 = linUp & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)): 0;
-							canJump & 0 = lin2Up & ((6 = diag2Dir & movN = 1)|(6 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[0][6];
-								esac;
-							canJump & 0 = linDw & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)): 0;
-							canJump & 0 = lin2Dw & ((6 = diag2Dir & movN = 1)|(6 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[0][6];
-								esac;
-							!canJump & canMove & whoIs = 1 & 0 = linUp & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 0 = linDw & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)):3;
-							TRUE: board[0][6];
-						 esac;
-	next(board[0][7]) := board[0][7];
-	next(board[1][0]) := board[1][0];
-	next(board[1][1]) := case
-							lin = 1 & col = 1 & canMove: 0;
-							canJump & 1 = linUp & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)): 0;
-							canJump & 1 = lin2Up & ((1 = diag2Dir & movN = 1)|(1 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[1][1];
-								esac;
-							canJump & 1 = linDw & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)): 0;
-							canJump & 1 = lin2Dw & ((1 = diag2Dir & movN = 1)|(1 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[1][1];
-								esac;
-							!canJump & canMove & whoIs = 1 & 1 = linUp & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 1 = linDw & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)):3;
-							TRUE: board[1][1];
-						 esac;
-	next(board[1][2]) := board[1][2];
-	next(board[1][3]) := case
-							lin = 1 & col = 3 & canMove: 0;
-							canJump & 1 = linUp & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)): 0;
-							canJump & 1 = lin2Up & ((3 = diag2Dir & movN = 1)|(3 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[1][3];
-								esac;
-							canJump & 1 = linDw & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)): 0;
-							canJump & 1 = lin2Dw & ((3 = diag2Dir & movN = 1)|(3 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[1][3];
-								esac;
-							!canJump & canMove & whoIs = 1 & 1 = linUp & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 1 = linDw & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)):3;
-							TRUE: board[1][3];
-						 esac;
-	next(board[1][4]) := board[1][4];
-	next(board[1][5]) := case
-							lin = 1 & col = 5 & canMove: 0;
-							canJump & 1 = linUp & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)): 0;
-							canJump & 1 = lin2Up & ((5 = diag2Dir & movN = 1)|(5 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[1][5];
-								esac;
-							canJump & 1 = linDw & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)): 0;
-							canJump & 1 = lin2Dw & ((5 = diag2Dir & movN = 1)|(5 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[1][5];
-								esac;
-							!canJump & canMove & whoIs = 1 & 1 = linUp & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 1 = linDw & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)):3;
-							TRUE: board[1][5];
-						 esac;
-	next(board[1][6]) := board[1][6];
-	next(board[1][7]) := case
-							lin = 1 & col = 7 & canMove: 0;
-							canJump & 1 = linUp & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)): 0;
-							canJump & 1 = lin2Up & ((7 = diag2Dir & movN = 1)|(7 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[1][7];
-								esac;
-							canJump & 1 = linDw & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)): 0;
-							canJump & 1 = lin2Dw & ((7 = diag2Dir & movN = 1)|(7 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[1][7];
-								esac;
-							!canJump & canMove & whoIs = 1 & 1 = linUp & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 1 = linDw & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)):3;
-							TRUE: board[1][7];
-						 esac;
-	next(board[2][0]) := case
-							lin = 2 & col = 0 & (canMove | canJump): 0;
-							canJump & 2 = linUp & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)): 0;
-							canJump & 2 = lin2Up & ((0 = diag2Dir & movN = 1)|(0 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[2][0];
-								esac;
-							canJump & 2 = linDw & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)): 0;
-							canJump & 2 = lin2Dw & ((0 = diag2Dir & movN = 1)|(0 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[2][0];
-								esac;
-							!canJump & canMove & whoIs = 1 & 2 = linUp & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 2 = linDw & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)):3;
-							TRUE: board[2][0];
-						 esac;
-	next(board[2][1]) := board[2][1];
-	next(board[2][2]) := case
-							lin = 2 & col = 2 & (canMove | canJump): 0;
-							canJump & 2 = linUp & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)): 0;
-							canJump & 2 = lin2Up & ((2 = diag2Dir & movN = 1)|(2 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[2][2];
-								esac;
-							canJump & 2 = linDw & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)): 0;
-							canJump & 2 = lin2Dw & ((2 = diag2Dir & movN = 1)|(2 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[2][2];
-								esac;
-							!canJump & canMove & whoIs = 1 & 2 = linUp & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 2 = linDw & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)):3;
-							TRUE: board[2][2];
-						 esac;
-	next(board[2][3]) := board[2][3];
-	next(board[2][4]) := case
-							lin = 2 & col = 4 & (canMove | canJump): 0;
-							canJump & 2 = linUp & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)): 0;
-							canJump & 2 = lin2Up & ((4 = diag2Dir & movN = 1)|(4 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[2][4];
-								esac;
-							canJump & 2 = linDw & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)): 0;
-							canJump & 2 = lin2Dw & ((4 = diag2Dir & movN = 1)|(4 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[2][4];
-								esac;
-							!canJump & canMove & whoIs = 1 & 2 = linUp & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 2 = linDw & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)):3;
-							TRUE: board[2][4];
-						 esac;
-	next(board[2][5]) := board[2][5];
-	next(board[2][6]) := case
-							lin = 2 & col = 6 & (canMove | canJump): 0;
-							canJump & 2 = linUp & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)): 0;
-							canJump & 2 = lin2Up & ((6 = diag2Dir & movN = 1)|(6 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[2][6];
-								esac;
-							canJump & 2 = linDw & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)): 0;
-							canJump & 2 = lin2Dw & ((6 = diag2Dir & movN = 1)|(6 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[2][6];
-								esac;
-							!canJump & canMove & whoIs = 1 & 2 = linUp & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 2 = linDw & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)):3;
-							TRUE: board[2][6];
-						 esac;
-	next(board[2][7]) := board[2][7];
-	next(board[3][0]) := board[3][0];
-	next(board[3][1]) := case
-							lin = 3 & col = 1 & canMove: 0;
-							canJump & 3 = linUp & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)): 0;
-							canJump & 3 = lin2Up & ((1 = diag2Dir & movN = 1)|(1 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[3][1];
-								esac;
-							canJump & 3 = linDw & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)): 0;
-							canJump & 3 = lin2Dw & ((1 = diag2Dir & movN = 1)|(1 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[3][1];
-								esac;
-							!canJump & canMove & whoIs = 1 & 3 = linUp & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 3 = linDw & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)):3;
-							TRUE: board[3][1];
-						 esac;
-	next(board[3][2]) := board[3][2];
-	next(board[3][3]) := case
-							lin = 3 & col = 3 & canMove: 0;
-							canJump & 3 = linUp & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)): 0;
-							canJump & 3 = lin2Up & ((3 = diag2Dir & movN = 1)|(3 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[3][3];
-								esac;
-							canJump & 3 = linDw & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)): 0;
-							canJump & 3 = lin2Dw & ((3 = diag2Dir & movN = 1)|(3 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[3][3];
-								esac;
-							!canJump & canMove & whoIs = 1 & 3 = linUp & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 3 = linDw & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)):3;
-							TRUE: board[3][3];
-						 esac;
-	next(board[3][4]) := board[3][4];
-	next(board[3][5]) := case
-							lin = 3 & col = 5 & canMove: 0;
-							canJump & 3 = linUp & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)): 0;
-							canJump & 3 = lin2Up & ((5 = diag2Dir & movN = 1)|(5 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[3][5];
-								esac;
-							canJump & 3 = linDw & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)): 0;
-							canJump & 3 = lin2Dw & ((5 = diag2Dir & movN = 1)|(5 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[3][5];
-								esac;
-							!canJump & canMove & whoIs = 1 & 3 = linUp & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 3 = linDw & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)):3;
-							TRUE: board[3][5];
-						 esac;
-	next(board[3][6]) := board[3][6];
-	next(board[3][7]) := case
-							lin = 3 & col = 7 & canMove: 0;
-							canJump & 3 = linUp & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)): 0;
-							canJump & 3 = lin2Up & ((7 = diag2Dir & movN = 1)|(7 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[3][7];
-								esac;
-							canJump & 3 = linDw & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)): 0;
-							canJump & 3 = lin2Dw & ((7 = diag2Dir & movN = 1)|(7 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[3][7];
-								esac;
-							!canJump & canMove & whoIs = 1 & 3 = linUp & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 3 = linDw & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)):3;
-							TRUE: board[3][7];
-						 esac;
-	next(board[4][0]) := case
-							lin = 4 & col = 0 & (canMove | canJump): 0;
-							canJump & 4 = linUp & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)): 0;
-							canJump & 4 = lin2Up & ((0 = diag2Dir & movN = 1)|(0 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[4][0];
-								esac;
-							canJump & 4 = linDw & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)): 0;
-							canJump & 4 = lin2Dw & ((0 = diag2Dir & movN = 1)|(0 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[4][0];
-								esac;
-							!canJump & canMove & whoIs = 1 & 4 = linUp & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 4 = linDw & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)):3;
-							TRUE: board[4][0];
-						 esac;
-	next(board[4][1]) := board[4][1];
-	next(board[4][2]) := case
-							lin = 4 & col = 2 & (canMove | canJump): 0;
-							canJump & 4 = linUp & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)): 0;
-							canJump & 4 = lin2Up & ((2 = diag2Dir & movN = 1)|(2 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[4][2];
-								esac;
-							canJump & 4 = linDw & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)): 0;
-							canJump & 4 = lin2Dw & ((2 = diag2Dir & movN = 1)|(2 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[4][2];
-								esac;
-							!canJump & canMove & whoIs = 1 & 4 = linUp & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 4 = linDw & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)):3;
-							TRUE: board[4][2];
-						 esac;
-	next(board[4][3]) := board[4][3];
-	next(board[4][4]) := case
-							lin = 4 & col = 4 & (canMove | canJump): 0;
-							canJump & 4 = linUp & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)): 0;
-							canJump & 4 = lin2Up & ((4 = diag2Dir & movN = 1)|(4 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[4][4];
-								esac;
-							canJump & 4 = linDw & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)): 0;
-							canJump & 4 = lin2Dw & ((4 = diag2Dir & movN = 1)|(4 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[4][4];
-								esac;
-							!canJump & canMove & whoIs = 1 & 4 = linUp & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 4 = linDw & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)):3;
-							TRUE: board[4][4];
-						 esac;
-	next(board[4][5]) := board[4][5];
-	next(board[4][6]) := case
-							lin = 4 & col = 6 & (canMove | canJump): 0;
-							canJump & 4 = linUp & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)): 0;
-							canJump & 4 = lin2Up & ((6 = diag2Dir & movN = 1)|(6 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[4][6];
-								esac;
-							canJump & 4 = linDw & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)): 0;
-							canJump & 4 = lin2Dw & ((6 = diag2Dir & movN = 1)|(6 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[4][6];
-								esac;
-							!canJump & canMove & whoIs = 1 & 4 = linUp & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 4 = linDw & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)):3;
-							TRUE: board[4][6];
-						 esac;
-	next(board[4][7]) := board[4][7];
-	next(board[5][0]) := board[5][0];
-	next(board[5][1]) := case
-							lin = 5 & col = 1 & canMove: 0;
-							canJump & 5 = linUp & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)): 0;
-							canJump & 5 = lin2Up & ((1 = diag2Dir & movN = 1)|(1 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[5][1];
-								esac;
-							canJump & 5 = linDw & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)): 0;
-							canJump & 5 = lin2Dw & ((1 = diag2Dir & movN = 1)|(1 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[5][1];
-								esac;
-							!canJump & canMove & whoIs = 1 & 5 = linUp & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 5 = linDw & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)):3;
-							TRUE: board[5][1];
-						 esac;
-	next(board[5][2]) := board[5][2];
-	next(board[5][3]) := case
-							lin = 5 & col = 3 & canMove: 0;
-							canJump & 5 = linUp & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)): 0;
-							canJump & 5 = lin2Up & ((3 = diag2Dir & movN = 1)|(3 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[5][3];
-								esac;
-							canJump & 5 = linDw & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)): 0;
-							canJump & 5 = lin2Dw & ((3 = diag2Dir & movN = 1)|(3 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[5][3];
-								esac;
-							!canJump & canMove & whoIs = 1 & 5 = linUp & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 5 = linDw & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)):3;
-							TRUE: board[5][3];
-						 esac;
-	next(board[5][4]) := board[5][4];
-	next(board[5][5]) := case
-							lin = 5 & col = 5 & canMove: 0;
-							canJump & 5 = linUp & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)): 0;
-							canJump & 5 = lin2Up & ((5 = diag2Dir & movN = 1)|(5 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[5][5];
-								esac;
-							canJump & 5 = linDw & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)): 0;
-							canJump & 5 = lin2Dw & ((5 = diag2Dir & movN = 1)|(5 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[5][5];
-								esac;
-							!canJump & canMove & whoIs = 1 & 5 = linUp & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 5 = linDw & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)):3;
-							TRUE: board[5][5];
-						 esac;
-	next(board[5][6]) := board[5][6];
-	next(board[5][7]) := case
-							lin = 5 & col = 7 & canMove: 0;
-							canJump & 5 = linUp & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)): 0;
-							canJump & 5 = lin2Up & ((7 = diag2Dir & movN = 1)|(7 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[5][7];
-								esac;
-							canJump & 5 = linDw & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)): 0;
-							canJump & 5 = lin2Dw & ((7 = diag2Dir & movN = 1)|(7 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[5][7];
-								esac;
-							!canJump & canMove & whoIs = 1 & 5 = linUp & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 5 = linDw & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)):3;
-							TRUE: board[5][7];
-						 esac;
-	next(board[6][0]) := case
-							lin = 6 & col = 0 & (canMove | canJump): 0;
-							canJump & 6 = linUp & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)): 0;
-							canJump & 6 = lin2Up & ((0 = diag2Dir & movN = 1)|(0 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[6][0];
-								esac;
-							canJump & 6 = linDw & ((0 = diagDir & movN = 1)|(0 = diagEsq & movN = 2)): 0;
-							canJump & 6 = lin2Dw & ((0 = diag2Dir & movN = 1)|(0 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[6][0];
-								esac;
-							!canJump & canMove & whoIs = 1 & 6 = linUp & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 6 = linDw & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)):3;
-							TRUE: board[6][0];
-						 esac;
-	next(board[6][1]) := board[6][1];
-	next(board[6][2]) := case
-							lin = 6 & col = 2 & (canMove | canJump): 0;
-							canJump & 6 = linUp & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)): 0;
-							canJump & 6 = lin2Up & ((2 = diag2Dir & movN = 1)|(2 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[6][2];
-								esac;
-							canJump & 6 = linDw & ((2 = diagDir & movN = 1)|(2 = diagEsq & movN = 2)): 0;
-							canJump & 6 = lin2Dw & ((2 = diag2Dir & movN = 1)|(2 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[6][2];
-								esac;
-							!canJump & canMove & whoIs = 1 & 6 = linUp & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 6 = linDw & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)):3;
-							TRUE: board[6][2];
-						 esac;
-	next(board[6][3]) := board[6][3];
-	next(board[6][4]) := case
-							lin = 6 & col = 4 & (canMove | canJump): 0;
-							canJump & 6 = linUp & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)): 0;
-							canJump & 6 = lin2Up & ((4 = diag2Dir & movN = 1)|(4 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[6][4];
-								esac;
-							canJump & 6 = linDw & ((4 = diagDir & movN = 1)|(4 = diagEsq & movN = 2)): 0;
-							canJump & 6 = lin2Dw & ((4 = diag2Dir & movN = 1)|(4 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[6][4];
-								esac;
-							!canJump & canMove & whoIs = 1 & 6 = linUp & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 6 = linDw & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)):3;
-							TRUE: board[6][4];
-						 esac;
-	next(board[6][5]) := board[6][5];
-	next(board[6][6]) := case
-							lin = 6 & col = 6 & (canMove | canJump): 0;
-							canJump & 6 = linUp & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)): 0;
-							canJump & 6 = lin2Up & ((6 = diag2Dir & movN = 1)|(6 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[6][6];
-								esac;
-							canJump & 6 = linDw & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)): 0;
-							canJump & 6 = lin2Dw & ((6 = diag2Dir & movN = 1)|(6 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[6][6];
-								esac;
-							!canJump & canMove & whoIs = 1 & 6 = linUp & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 6 = linDw & ((6 = diagDir & movN = 1)|(6 = diagEsq & movN = 2)):3;
-							TRUE: board[6][6];
-						 esac;
-	next(board[6][7]) := board[6][7];
-	next(board[7][0]) := board[7][0];
-	next(board[7][1]) := case
-							lin = 7 & col = 1 & canMove: 0;
-							canJump & 7 = linUp & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)): 0;
-							canJump & 7 = lin2Up & ((1 = diag2Dir & movN = 1)|(1 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[7][1];
-								esac;
-							canJump & 7 = linDw & ((1 = diagDir & movN = 1)|(1 = diagEsq & movN = 2)): 0;
-							canJump & 7 = lin2Dw & ((1 = diag2Dir & movN = 1)|(1 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[7][1];
-								esac;
-							!canJump & canMove & whoIs = 1 & 7 = linUp & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 7 = linDw & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)):3;
-							TRUE: board[7][1];
-						 esac;
-	next(board[7][2]) := board[7][2];
-	next(board[7][3]) := case
-							lin = 7 & col = 3 & canMove: 0;
-							canJump & 7 = linUp & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)): 0;
-							canJump & 7 = lin2Up & ((3 = diag2Dir & movN = 1)|(3 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[7][3];
-								esac;
-							canJump & 7 = linDw & ((3 = diagDir & movN = 1)|(3 = diagEsq & movN = 2)): 0;
-							canJump & 7 = lin2Dw & ((3 = diag2Dir & movN = 1)|(3 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[7][3];
-								esac;
-							!canJump & canMove & whoIs = 1 & 7 = linUp & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 7 = linDw & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)):3;
-							TRUE: board[7][3];
-						 esac;
-	next(board[7][4]) := board[7][4];
-	next(board[7][5]) := case
-							lin = 7 & col = 5 & canMove: 0;
-							canJump & 7 = linUp & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)): 0;
-							canJump & 7 = lin2Up & ((5 = diag2Dir & movN = 1)|(5 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[7][5];
-								esac;
-							canJump & 7 = linDw & ((5 = diagDir & movN = 1)|(5 = diagEsq & movN = 2)): 0;
-							canJump & 7 = lin2Dw & ((5 = diag2Dir & movN = 1)|(5 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[7][5];
-								esac;
-							!canJump & canMove & whoIs = 1 & 7 = linUp & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 7 = linDw & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)):3;
-							TRUE: board[7][5];
-						 esac;
-	next(board[7][6]) := board[7][6];
-	next(board[7][7]) := case
-							lin = 7 & col = 7 & canMove: 0;
-							canJump & 7 = linUp & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)): 0;
-							canJump & 7 = lin2Up & ((7 = diag2Dir & movN = 1)|(7 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[7][7];
-								esac;
-							canJump & 7 = linDw & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)): 0;
-							canJump & 7 = lin2Dw & ((7 = diag2Dir & movN = 1)|(7 = diag2Esq & movN = 2)):case
-								 whoIs = 1: 1;
-								 whoIs = 2: 3;
-								 TRUE: board[7][7];
-								esac;
-							!canJump & canMove & whoIs = 1 & 7 = linUp & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)):1;
-							!canJump & canMove & whoIs = 2 & 7 = linDw & ((7 = diagDir & movN = 1)|(7 = diagEsq & movN = 2)):3;
-							TRUE: board[7][7];
-						 esac;
+    next(board[lin][col]) := case
+							  canJump | canMove :0;
+							  TRUE:board[lin][col];
+							 esac;
+	next(board[linUp][diagDir]) := case
+									movN = 1 & canJump: 0;
+									movN = 1 & !canJump & canMove & whoIs = 1:1;
+									movN = 1 & !canJump & canMove & whoIs = 2:3;
+								    TRUE:board[linUp][diagDir];
+								   esac;
+    next(board[linUp][diagEsq]) := case
+									movN = 2 & canJump: 0;
+									movN = 2 & !canJump & canMove & whoIs = 1:1;
+									movN = 2 & !canJump & canMove & whoIs = 2:3;
+								    TRUE:board[linUp][diagEsq];
+								   esac;
+    next(board[linDw][diagDir]) := case
+									movN = 3 & canJump: 0;
+									movN = 3 & !canJump & canMove & whoIs = 1:1;
+									movN = 3 & !canJump & canMove & whoIs = 2:3;
+								    TRUE:board[linDw][diagDir];
+								   esac;
+    next(board[linDw][diagEsq]) := case
+									movN = 4 & canJump: 0;
+									movN = 4 & !canJump & canMove & whoIs = 1:1;
+									movN = 4 & !canJump & canMove & whoIs = 2:3;
+								    TRUE:board[linDw][diagEsq];
+								   esac;
+    next(board[lin2Up][diag2Dir]) := case
+									movN = 1 & canJump & whoIs = 1:1;
+									movN = 1 & canJump & whoIs = 2:3;
+								    TRUE:board[lin2Up][diag2Dir];
+								   esac;
+    next(board[lin2Up][diag2Esq]) := case
+									movN = 2 & canJump & whoIs = 1:1;
+									movN = 2 & canJump & whoIs = 2:3;
+								    TRUE:board[lin2Up][diag2Esq];
+								   esac;
+    next(board[lin2Dw][diag2Dir]) := case
+									movN = 3 & canJump & whoIs = 1:1;
+									movN = 3 & canJump & whoIs = 2:3;
+								    TRUE:board[lin2Dw][diag2Dir];
+								   esac;
+    next(board[lin2Dw][diag2Esq]) := case
+									movN = 4 & canJump & whoIs = 1:1;
+									movN = 4 & canJump & whoIs = 2:3;
+								    TRUE:board[lin2Dw][diag2Esq];
+								   esac;
     next(whoIs) := case
                     (canMove|canJump) & whoIs = 1: 2;
                     (canMove|canJump) & whoIs = 2: 1;

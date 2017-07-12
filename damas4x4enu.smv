@@ -1,8 +1,15 @@
-MODULE move(board,whoIs,pecas1,pecas2,lin,col)
+MODULE move(board,whoIs,pecas1,pecas2)
 VAR
+	lin: {0,1,2,3};
+	colAux: {0,2};
 	movN: {1,2};
 DEFINE
-    diagEsq := case
+    col := case
+             lin mod 2 = 0:colAux;
+             lin mod 2 = 1:colAux + 1;
+             TRUE: 0;
+            esac;
+	diagEsq := case
                 col - 1 > -1:col - 1;
                 col - 1 = -1 & lin mod 2=0 : 0; 
                 col - 1 = -1 & lin mod 2=1 : 1; 
@@ -265,14 +272,7 @@ VAR
     whoIs : 1..2;
     pecas1 : 0..2;
     pecas2 : 0..2;
-    move00: process move(board,whoIs,pecas1,pecas2,0,0);
-    move02: process move(board,whoIs,pecas1,pecas2,0,2);
-    move11: process move(board,whoIs,pecas1,pecas2,1,1);
-    move13: process move(board,whoIs,pecas1,pecas2,1,3);
-    move20: process move(board,whoIs,pecas1,pecas2,2,0);
-    move22: process move(board,whoIs,pecas1,pecas2,2,2);
-    move31: process move(board,whoIs,pecas1,pecas2,3,1);
-    move33: process move(board,whoIs,pecas1,pecas2,3,3);
+    move: move(board,whoIs,pecas1,pecas2);
 ASSIGN
     init(whoIs) := 1;
     init(pecas1) := 1;
